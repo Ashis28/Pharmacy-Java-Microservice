@@ -1,9 +1,9 @@
-package com.pharmacy.auth.controller;
+package com.pharma.controller;
 
-import com.pharmacy.auth.dto.LoginRequest;
-import com.pharmacy.auth.dto.LoginResponse;
-import com.pharmacy.auth.dto.SignupRequest;
-import com.pharmacy.auth.service.AuthService;
+import com.pharma.dto.LoginRequest;
+import com.pharma.dto.LoginResponse;
+import com.pharma.dto.SignupRequest;
+import com.pharma.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

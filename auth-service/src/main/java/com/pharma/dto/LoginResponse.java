@@ -1,4 +1,4 @@
-package com.pharmacy.auth.dto;
+package com.pharma.dto;
 
 import lombok.Data;
 

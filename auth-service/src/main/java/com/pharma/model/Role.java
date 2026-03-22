@@ -1,4 +1,4 @@
-package com.pharmacy.auth.model;
+package com.pharma.model;
 
 public enum Role {
     CUSTOMER,
