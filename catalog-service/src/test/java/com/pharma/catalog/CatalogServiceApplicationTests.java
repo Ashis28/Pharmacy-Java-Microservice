@@ -1,10 +1,10 @@
-package com.cpag.springboot.customer;
+package com.pharma.catalog;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class CustomerServiceApplicationTests {
+class CatalogServiceApplicationTests {
 
 	@Test
 	void contextLoads() {
