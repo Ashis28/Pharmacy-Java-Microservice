@@ -1,4 +1,4 @@
-package com.sprint1.authservice;
+package com.pharma;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
