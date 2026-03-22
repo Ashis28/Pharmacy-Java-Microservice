@@ -1,5 +1,0 @@
-package com.sprint1.authservice.model;
-
-public enum Role {
-
-}
