@@ -7,7 +7,6 @@ import com.pharma.model.Role;
 import com.pharma.model.User;
 import com.pharma.repository.UserRepository;
 import com.pharma.security.JwtService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,15 +14,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class AuthService {
 
     private final UserRepository repo;
     private final PasswordEncoder encoder;
     private final JwtService jwtService;
-    public AuthService(UserRepository repo,PasswordEncoder encoder,JwtService jwtService) {
+
+    public AuthService(UserRepository repo, PasswordEncoder encoder, JwtService jwtService) {
         this.repo = repo;
-        this.encoder  =encoder;
+        this.encoder = encoder;
         this.jwtService = jwtService;
     }
 
@@ -32,7 +31,6 @@ public class AuthService {
             throw new RuntimeException("Email already registered");
         }
 
-        // Default to CUSTOMER if no roles provided
         Set<Role> roles = (req.getRoles() == null || req.getRoles().isEmpty())
                 ? Set.of(Role.CUSTOMER)
                 : req.getRoles().stream().map(Role::valueOf).collect(Collectors.toSet());
