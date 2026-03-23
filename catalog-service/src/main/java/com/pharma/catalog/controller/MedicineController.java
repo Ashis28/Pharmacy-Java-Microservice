@@ -42,8 +42,8 @@ public class MedicineController {
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<MedicineDTO>getMedicineById(@PathVariable Long Id){
-		return ResponseEntity.ok(medicineService.getMedicineById(Id));
+	public ResponseEntity<MedicineDTO>getMedicineById(@PathVariable Long id){
+		return ResponseEntity.ok(medicineService.getMedicineById(id));
 	}
 	@PostMapping("/batch")
     public ResponseEntity<List<MedicineDTO>> getMedicinesByIds(@RequestBody List<Long> ids) {

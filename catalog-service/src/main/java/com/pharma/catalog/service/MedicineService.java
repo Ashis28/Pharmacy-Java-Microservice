@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.pharma.catalog.dto.MedicineDTO;
 import com.pharma.catalog.entity.Category;
@@ -30,7 +32,8 @@ public class MedicineService {
 	}
 	public MedicineDTO getMedicineById(Long id) {
         Medicine medicine = medicineRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Medicine not found with id: " + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Medicine not found with id: " + id));
+        System.out.println("returned entity"+medicine.getManufacturer());
         return toDTO(medicine);
     }
 	public List<MedicineDTO> searchByName(String name) {

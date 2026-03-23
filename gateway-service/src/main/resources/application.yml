@@ -8,7 +8,10 @@ spring:
           uri: lb://catalog-service
           predicates:
             - Path=/api/catalog/**
-
+        - id: order-service
+          uri: lb://order-service
+          predicates:
+            - Path=/api/orders/**
 
 eureka:
   client:
