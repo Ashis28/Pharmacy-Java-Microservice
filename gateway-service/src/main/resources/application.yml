@@ -4,35 +4,10 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: product-service
-          uri: lb://PRODUCT-SERVICE
+        - id: catlog-service
+          uri: lb://catalog-service
           predicates:
-            - Path=/product/**
-        - id: category-service
-          uri: lb://CATEGORY-SERVICE
-          predicates:
-            - Path=/category/**
-        - id: address-service
-          uri: lb://ADDRESS-SERVICE
-          predicates:
-            - Path=/address/**
-        - id: order-service
-          uri: lb://ORDER-SERVICE
-          predicates:
-            - Path=/order/**
-        - id: customer-service
-          uri: lb://CUSTOMER-SERVICE
-          predicates:
-             - Path=/customer/**
-        - id: user-service
-          uri: lb://USER-SERVICE
-          predicates:
-            - Path=/user/**
-        - id: cart-service
-          uri: lb://CART-SERVICE
-          predicates:
-             - Path=/cart/**
-
+            - Path=/api/catalog/**
 
 
 eureka:

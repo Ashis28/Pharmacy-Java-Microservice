@@ -41,6 +41,8 @@ public class Medicine {
 	@Column(nullable = false)
 	private boolean requiresPrescription;
 	
+	private String dosageInfo;
+	
 	@Future(message = "Expiry date must be in the future")
     private LocalDate expiryDate;
 	
@@ -110,6 +112,14 @@ public class Medicine {
 
 	public void setCategory(Category category) {
 		this.category = category;
+	}
+
+	public String getDosageInfo() {
+		return dosageInfo;
+	}
+
+	public void setDosageInfo(String dosageInfo) {
+		this.dosageInfo = dosageInfo;
 	}
 	
 }

@@ -122,8 +122,10 @@ public class MedicineService {
         m.setPrice(dto.getPrice());
         m.setStock(dto.getStock());
         m.setRequiresPrescription(dto.isRequiresPrescription());
+        m.setDosageInfo(dto.getDosageInfo());
         m.setExpiryDate(dto.getExpiryDate());
         m.setCategory(category);
+       
         return m;
     }
 }

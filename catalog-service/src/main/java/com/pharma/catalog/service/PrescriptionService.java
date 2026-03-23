@@ -51,6 +51,7 @@ public class PrescriptionService {
         prescription.setCustomerId(customerId);
         prescription.setMedicineIds(medicineIds);
         prescription.setStatus(PrescriptionStatus.PENDING);
+        prescription.setNotes("Added");
         prescription.setUploadedAt(LocalDateTime.now());
         return toDTO(prescriptionRepository.save(prescription));
     }
