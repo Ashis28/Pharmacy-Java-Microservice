@@ -7,9 +7,10 @@ eureka: 8761
 gateway: 8888
 
 for other branches start from 
-9091 [N]
-9092 [N]
-.    [S]
-.    [S]
-9096 [J]
-9097 [J]
+9091 [S]
+9092 [S]
+9093 [N] -> Order
+9094 [N] -> Order Item
+9095 [J] -> .Cart
+9096 [J] -> Category
+9097 [J] -> Payment
