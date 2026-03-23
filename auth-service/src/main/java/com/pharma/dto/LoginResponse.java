@@ -1,11 +1,19 @@
 package com.pharma.dto;
 
-import lombok.Data;
+import com.pharma.model.Role;
+import lombok.Getter;
 
-@Data
+import java.util.Set;
+
+@Getter
 public class LoginResponse {
-    private String token;
-    public LoginResponse(String token) {
+    private final String token;
+    private final String name;
+    private final Set<Role> roles;
+
+    public LoginResponse(String token, String name, Set<Role> roles) {
         this.token = token;
+        this.name = name;
+        this.roles = roles;
     }
 }
