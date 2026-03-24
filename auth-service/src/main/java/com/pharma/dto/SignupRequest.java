@@ -2,7 +2,9 @@ package com.pharma.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import jakarta.validation.Valid;
 import java.util.Set;
 
 public class SignupRequest {
@@ -20,6 +22,10 @@ public class SignupRequest {
 
     private Set<String> roles; // optional — defaults to CUSTOMER
 
+    @Valid
+    @NotNull(message = "Address is required")
+    private AddressRequest address;
+
     // No-arg constructor required for Jackson deserialization
     public SignupRequest() {}
 
@@ -34,4 +40,7 @@ public class SignupRequest {
 
     public Set<String> getRoles() { return roles; }
     public void setRoles(Set<String> roles) { this.roles = roles; }
+
+    public AddressRequest getAddress() { return address; }
+    public void setAddress(AddressRequest address) { this.address = address; }
 }
