@@ -17,7 +17,7 @@ import com.pharma.order.dto.CartItemResponse;
 import com.pharma.order.service.CartService;
  
 @RestController
-@RequestMapping("/api/orders/cart")
+@RequestMapping("/api/cart")
 public class CartController {
  
     @Autowired

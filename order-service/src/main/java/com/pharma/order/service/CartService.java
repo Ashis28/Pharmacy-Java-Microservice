@@ -87,6 +87,7 @@ public class CartService {
 	public CartItemResponse toResponse(Cart cart,MedicineDTO medicine) {
 		CartItemResponse response = new CartItemResponse();
         response.setCartId(cart.getCartId());
+        response.setCustomerId(cart.getCustomerId());
         response.setMedicineId(cart.getMedicineId());
         response.setQuantity(cart.getQuantity());
  
