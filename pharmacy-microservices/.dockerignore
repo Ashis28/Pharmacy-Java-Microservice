@@ -1,0 +1,10 @@
+**/.git/
+**/.idea/
+**/.settings/
+**/.classpath
+**/.project
+**/.factorypath
+**/node_modules/
+**/*.log
+.dockerignore
+README.md

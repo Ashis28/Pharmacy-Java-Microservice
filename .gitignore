@@ -13,3 +13,96 @@ bin/
 # OS files
 .DS_Store
 Thumbs.db
+
+when i run each serive a token is generated. what is it used for?? dont we already have a token for user and admin from auth-serivce
+
+upload nai hon rehah
+when i try to approve the preciption from admin, in postman why does it use put and not patch?? isnt put used to make change in whole code and patch for specific code
+
+exception / order make it 
+
+even if i didnt run the admin service i could perform all the admin task except dashboard. if the microservice has role admin.
+
+
+
+RabbitMQ Dashboard http://localhost:15672
+
+Username: guest
+Password: guest
+From there you can see:
+
+Queues — messages in/out, ready, unacked
+Exchanges — where messages are published
+Connections & Channels — active consumers (your notification-service)
+To see notification flow end-to-end, let me check what events your services publish:
+
+Searched workspace
+Find RabbitMQ queue names and exchange configs used in the project
+Searched workspace
+Find RabbitMQ configuration and queue names across all services
+Now I have the full picture. Here's everything:
+
+RabbitMQ Dashboard http://localhost:15672 — login: guest / guest
+
+What to look at:
+
+Exchanges tab → find pharmacy.exchange (TopicExchange)
+Queues tab → find notification.queue — shows messages ready/delivered
+Click the queue → you can manually publish a test message or see message rates
+How notifications are triggered
+
+The flow is: order-service places an order → publishes to pharmacy.exchange with routing key notification.send → notification-service consumes from notification.queue and logs it.
+
+To trigger it, place an order via Swagger:
+
+http://localhost:9091/swagger-ui/index.html → register + login → copy JWT
+http://localhost:9093/swagger-ui/index.html → Authorize with Bearer <token> → call POST /api/orders
+Then check notification-service logs:
+docker logs notification-service -f
+You'll see something like:
+
+[NOTIFICATION] type=ORDER_PLACED to=user@email.com subject=...
+And in RabbitMQ dashboard under notification.queue you'll see the message count tick up and back down as it's consumed.
+
+To see live notification logs just run:
+
+docker logs notification-service -f
+
+
+Step 1 — Login to Docker Hub:
+
+docker login
+Enter your Docker Hub username and password.
+
+Step 2 — Build JARs:
+
+mvn clean package -DskipTests
+Step 3 — Build and tag all images (replace yourusername with your Docker Hub username):
+
+docker build -t yourusername/eureka-server:latest ./eureka-server
+docker build -t yourusername/gateway-service:latest ./gateway-service
+docker build -t yourusername/auth-service:latest ./auth-service
+docker build -t yourusername/catalog-service:latest ./catalog-service
+docker build -t yourusername/order-service:latest ./order-service
+docker build -t yourusername/admin-service:latest ./admin-service
+docker build -t yourusername/payment-service:latest ./payment-service
+docker build -t yourusername/notification-service:latest ./notification-service
+Step 4 — Push all images:
+
+docker push yourusername/eureka-server:latest
+docker push yourusername/gateway-service:latest
+docker push yourusername/auth-service:latest
+docker push yourusername/catalog-service:latest
+docker push yourusername/order-service:latest
+docker push yourusername/admin-service:latest
+docker push yourusername/payment-service:latest
+docker push yourusername/notification-service:latest
+Or do it all in one script — run this in PowerShell replacing yourusername:
+
+
+$user = "yourusername"
+$services = @("eureka-server","gateway-service","auth-service","catalog-service","order-service","admin-service","payment-service","notification-service")
+foreach ($svc in $services) {
+    docker build -t "$user/$svc`:latest" "./$svc"
+    docker push "$user/$svc`:latest"
+}ocker push yourusername/notification-service:latest

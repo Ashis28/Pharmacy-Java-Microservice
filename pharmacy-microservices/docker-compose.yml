@@ -1,0 +1,216 @@
+services:
+
+  # ─── RabbitMQ ─────────────────────────────────────────────────────────────
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: pharmacy-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - pharmacy-net
+
+  # ─── MySQL ────────────────────────────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: pharmacy-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - pharmacy-net
+
+  # ─── Eureka Server ────────────────────────────────────────────────────────
+  eureka-server:
+    build:
+      context: .
+      dockerfile: eureka-server/Dockerfile
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    environment:
+      - EUREKA_HOST=eureka-server
+    networks:
+      - pharmacy-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8761/actuator/health || curl -f http://localhost:8761/ || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 8
+      start_period: 30s
+
+  # ─── Auth Service ─────────────────────────────────────────────────────────
+  auth-service:
+    build:
+      context: .
+      dockerfile: auth-service/Dockerfile
+    container_name: auth-service
+    ports:
+      - "9091:9091"
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASS=root
+      - EUREKA_HOST=eureka-server
+      - JWT_SECRET=pharmacy_super_secret_key_for_hs256_min_32chars
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - pharmacy-net
+
+  # ─── Catalog Service ──────────────────────────────────────────────────────
+  catalog-service:
+    build:
+      context: .
+      dockerfile: catalog-service/Dockerfile
+    container_name: catalog-service
+    ports:
+      - "9092:9092"
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASS=root
+      - EUREKA_HOST=eureka-server
+      - JWT_SECRET=pharmacy_super_secret_key_for_hs256_min_32chars
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - pharmacy-net
+
+  # ─── Order Service ────────────────────────────────────────────────────────
+  order-service:
+    build:
+      context: .
+      dockerfile: order-service/Dockerfile
+    container_name: order-service
+    ports:
+      - "9093:9093"
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASS=root
+      - EUREKA_HOST=eureka-server
+      - JWT_SECRET=pharmacy_super_secret_key_for_hs256_min_32chars
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_USER=guest
+      - RABBITMQ_PASS=guest
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - pharmacy-net
+
+  # ─── Admin Service ────────────────────────────────────────────────────────
+  admin-service:
+    build:
+      context: .
+      dockerfile: admin-service/Dockerfile
+    container_name: admin-service
+    ports:
+      - "9094:9094"
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASS=root
+      - EUREKA_HOST=eureka-server
+      - JWT_SECRET=pharmacy_super_secret_key_for_hs256_min_32chars
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - pharmacy-net
+
+  # ─── Payment Service ──────────────────────────────────────────────────────
+  payment-service:
+    build:
+      context: .
+      dockerfile: payment-service/Dockerfile
+    container_name: payment-service
+    ports:
+      - "9095:9095"
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASS=root
+      - EUREKA_HOST=eureka-server
+      - JWT_SECRET=pharmacy_super_secret_key_for_hs256_min_32chars
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - pharmacy-net
+
+  # ─── Notification Service ─────────────────────────────────────────────────
+  notification-service:
+    build:
+      context: .
+      dockerfile: notification-service/Dockerfile
+    container_name: notification-service
+    ports:
+      - "9096:9096"
+    environment:
+      - EUREKA_HOST=eureka-server
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_USER=guest
+      - RABBITMQ_PASS=guest
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - pharmacy-net
+
+  # ─── Gateway ──────────────────────────────────────────────────────────────
+  gateway-service:
+    build:
+      context: .
+      dockerfile: gateway-service/Dockerfile
+    container_name: gateway-service
+    ports:
+      - "8888:8888"
+    environment:
+      - EUREKA_HOST=eureka-server
+      - JWT_SECRET=pharmacy_super_secret_key_for_hs256_min_32chars
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - pharmacy-net
+
+volumes:
+  mysql-data:
+
+networks:
+  pharmacy-net:
+    driver: bridge
